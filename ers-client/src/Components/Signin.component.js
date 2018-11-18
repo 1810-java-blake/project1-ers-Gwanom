@@ -1,5 +1,4 @@
 import React from 'react';
-// import axios from 'axios';
 
 export class SignInComponent extends React.Component {
   constructor(props) {
@@ -7,7 +6,8 @@ export class SignInComponent extends React.Component {
 
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      failed: false
     }
   }
 
@@ -27,22 +27,40 @@ export class SignInComponent extends React.Component {
 
   submit = (e) => {
     e.preventDefault();
-    let cred = this.state;
-    console.log("POST to /users/login")
+    let cred = {
+      username: this.state.username,
+      password: this.state.password
+    }
     fetch('http://localhost:8080/ERS/users/login', {
       method: 'POST',
       body: JSON.stringify(cred),
-      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json'
       },
       credentials: 'include'
     })
       .then(res => {
-            console.log(res.status);
-        if (res.status === 200) {
-            console.log("status === 200")
-          this.props.history.push('/success');
+        if (res.status === 403) {
+          this.setState({
+            ...this.state,
+            failed: true
+          })
+          throw new Error(res);
+        }
+        return res;
+      })
+      .then(res => res.json())
+      .then(res => {
+        sessionStorage.setItem("role", res.role.toLowerCase());
+        sessionStorage.setItem("name", res.name);
+        sessionStorage.setItem("u_id", res.id);
+      })
+      .then(() => {
+        if ("manager" === sessionStorage.getItem("role")) {
+          this.props.history.push('/admin');
+
+        } else if ("employee" === sessionStorage.getItem("role")) {
+          this.props.history.push('/home');
         }
       })
       .catch(err => {
@@ -53,7 +71,7 @@ export class SignInComponent extends React.Component {
   render() {
     return (
       <form className="form-signin" onSubmit={this.submit}>
-        <h1 className="h3 mb-3 font-weight-normal">Please sign in to Revature</h1>
+        <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
 
         <label htmlFor="input-username" className="sr-only">Username</label>
         <input type="text"
@@ -78,6 +96,12 @@ export class SignInComponent extends React.Component {
           type="submit">
           Sign in
         </button>
+        {
+          (this.state.failed === true) &&
+          <div class="alert alert-danger" role="alert">
+            Invalid username and/or password
+          </div>
+        }
         <p className="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
       </form>
     )

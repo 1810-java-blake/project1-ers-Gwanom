@@ -33,6 +33,9 @@ public class AppUserServiceImpl implements AppUserService {
 			log.trace("login: u != null");
 			log.trace(u.toString());
 			session.setAttribute("role", u.getRole());
+			session.setAttribute("u_id", u.getUserId());
+			session.setAttribute("name", u.getFirstName());
+			
 			return true;
 		}
 		log.trace("login: u == null");

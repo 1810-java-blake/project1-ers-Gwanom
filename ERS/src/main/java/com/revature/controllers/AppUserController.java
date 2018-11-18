@@ -45,9 +45,12 @@ public class AppUserController extends HttpServlet {
 		log.trace("AppUserController.processGet()");
 
 		String uri = req.getRequestURI();
+		log.debug(uri);
 		String context = "ERS";
 		uri = uri.substring(context.length() + 2, uri.length());
+		log.debug(uri);
 		String[] uriArray = uri.split("/");
+		
 
 		if (uriArray.length == 1) {
 //			 /users
@@ -79,6 +82,7 @@ public class AppUserController extends HttpServlet {
 					ResponseMapper.convertAndAttach(reimbs, resp);
 					return;
 				} catch (NumberFormatException e) {
+					log.trace("NumberFormatException catch");
 					resp.setStatus(404);
 					return;
 				}
@@ -117,13 +121,22 @@ public class AppUserController extends HttpServlet {
 					resp.setStatus(403);
 				} else {
 					log.trace("setting status 200");
+					log.debug("a(n) " + req.getSession().getAttribute("role") + " logged in" );
 					resp.setStatus(200);
+					String respBody = "{\"role\": \"" + req.getSession().getAttribute("role") + "\"," + 
+										    "\"id\": \"" + req.getSession().getAttribute("u_id") + "\"," + 
+										    "\"name\": \"" + req.getSession().getAttribute("name") + "\"}";
+					log.debug(respBody);
+					resp.getWriter().write(respBody);
 				}
+			} else if("users/logout".equals(uri)) {
+				log.trace("invalidating session");
+				req.getSession().invalidate();
+				return;
 			} else {
 				resp.setStatus(404);
 				return;
 			}
-			return;
 		} else if (uriArray.length == 3) {
 //			/users/1/reimb
 			log.info("Creating new reimbursement for user " + uriArray[1]);

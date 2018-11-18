@@ -1,10 +1,14 @@
-.App {
-  text-align: center;
+@font-face {
+  font-family: 'spotify-circular';
+  src: url('https://open.scdn.co/fonts/CircularSpUIv3T-Light.woff2') format('woff2'), 
+       url('https://open.scdn.co/fonts/CircularSpUIv3T-Light.woff') format('woff'),  
+       url('https://open.scdn.co/fonts/CircularSpUIv3T-Light.ttf') format('ttf');
+  font-weight: 200;
+  font-style: normal;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
+.App {
+  text-align: center;
 }
 
 .App-header {
@@ -22,6 +26,21 @@
   color: #61dafb;
 }
 
-.sign-in-field {
+.form-signin {
+  width: 20%;
   margin : auto;
+}
+
+.form-signin > * {
+  margin : 4px;
+  padding : 2px;
+}
+
+.type-icon{
+  width:90%;
+  margin:auto;
+}
+
+.table-title{
+  margin: 10px;
 }
