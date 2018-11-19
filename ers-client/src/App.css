@@ -42,5 +42,11 @@
 }
 
 .table-title{
-  margin: 10px;
+  margin-left: 5%;
+  margin-top: 10px;
+}
+
+.reimb-table{
+  widows: 90%;
+  margin: auto;
 }

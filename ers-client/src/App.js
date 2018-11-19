@@ -11,6 +11,10 @@ import { Success } from './Components/Success.component';
 import { Admin } from './Components/Admin.component';
 
 class App extends Component {
+  componentDidMount(){
+    document.title="Revature ERS";
+  }
+
   render() {
     return (
       <BrowserRouter>
@@ -23,6 +27,7 @@ class App extends Component {
               <Route path="/logged-out" component={LoggedOut} />
               <Route path="/success" component={Success} />
               <Route path="/admin" component={Admin} />
+              <Route path="/login" component={SignInComponent} />
               <Route path="" component={SignInComponent} />
             </Switch>
           </div>

@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 import { MdFlight, MdHotel, MdRestaurant, MdShoppingBasket} from 'react-icons/md';
+import { ApproveButton } from './Approve.button.component';
+import { DenyButton } from './Deny.button.component';
 
 export class FullReimbursement extends PureComponent {
     state = {
@@ -46,19 +48,22 @@ export class FullReimbursement extends PureComponent {
     }
 
     render() {
-        const { reimbursementAmount, submitted, description, authorUserId } = this.props.reimbursement;
+        const { reimbursementId, reimbursementAmount, submitted, description, authorFirstName, authorLastName } = this.props.reimbursement;
 
         return (
             <tr>
                 <td>${reimbursementAmount}</td>
                 <td>{this.timeConverter(submitted)}</td>
                 <td>{description}</td>
-                <td>{authorUserId}</td>
+                <td>{authorFirstName} {authorLastName}</td>
                 <td>
                     {(this.props.reimbursement.reimbursementTypeId === 1) && <div title="lodging"><MdHotel className="type-icon"/></div>}
                     {(this.props.reimbursement.reimbursementTypeId === 2) && <div title="travel"><MdFlight className="type-icon"/></div>}
                     {(this.props.reimbursement.reimbursementTypeId === 3) && <div title="food"><MdRestaurant className="type-icon"/></div>}
                     {(this.props.reimbursement.reimbursementTypeId === 4) && <div title="other"><MdShoppingBasket className="type-icon"/></div>}
+                </td>
+                <td> 
+                    <ApproveButton reimbId={reimbursementId} /> <DenyButton reimbId={reimbursementId} /> 
                 </td>
             </tr>
         );

@@ -45,7 +45,7 @@ public class AppUserDaoJdbc implements AppUserDao {
 		log.trace("AppUserDaoJdbc.extractRFromResultSet()");
 		return new Reimbursement(rs.getInt("reimb_id"), rs.getDouble("reimb_amt"), rs.getTimestamp("reimb_submitted"),
 				rs.getTimestamp("reimb_resolved"), rs.getString("reimb_description"), rs.getInt("reimb_author"),
-				rs.getInt("reimb_resolver"), rs.getInt("reimb_status_id"), rs.getInt("reimb_type_id"));
+				rs.getString("user_first_name"), rs.getString("user_last_name"), rs.getInt("reimb_resolver"), rs.getInt("reimb_status_id"), rs.getInt("reimb_type_id"));
 	}
 
 	@Override
@@ -133,8 +133,13 @@ public class AppUserDaoJdbc implements AppUserDao {
 	public List<Reimbursement> findReimbsByUser(int id) {
 		log.trace("AppUserDaoJdbc.findReimbsByUser()");
 		try {
+			String SQL = 
+					"SELECT * FROM ers_reimbursement as r " +
+					"INNER JOIN ers_users as u " +
+					"ON r.reimb_author = u.ers_users_id " +
+					"WHERE reimb_author = ?";
 			Connection con = ConnectionUtil.getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT * FROM ers_reimbursement WHERE reimb_author = ?");
+			PreparedStatement ps = con.prepareStatement(SQL);
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			List<Reimbursement> reimbursements = new ArrayList<>();

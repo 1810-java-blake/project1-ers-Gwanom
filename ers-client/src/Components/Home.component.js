@@ -84,13 +84,19 @@ export class Home extends React.Component {
     }
 
     render() {
+        let tableStyle = {
+            width: "90%",
+            margin: "auto"
+        };
+        let buttonStyle = { "margin-left": "5%" };
         return (
+            
             <>
                 <div>
                     <h3 className="table-title">
                         {this.state.name}'s Reimbursement Requests
                 </h3>
-                    <table className="table table-hover">
+                    <table className="table table-hover" style={tableStyle}>
                         <thead>
                             <tr>
                                 <th scope="col">Amount</th>
@@ -110,7 +116,7 @@ export class Home extends React.Component {
                     </table>
                 </div>
                 <div>
-                    <button button type="button" className="btn btn-primary" data-toggle="modal" data-target="#formModal">
+                    <button button type="button" className="btn btn-primary" data-toggle="modal" data-target="#formModal" style={buttonStyle} >
                         Submit a New Reimbursement Request
                     </button>
 

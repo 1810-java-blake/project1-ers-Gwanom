@@ -32,20 +32,25 @@ export class Admin extends React.Component {
     }
 
     render() {
+        let tableStyle = {
+            width: "90%",
+            margin: "auto"
+        }
         return (
             <div>
                 <h3 className="table-title">
                     Pending Reimbursement Requests
                 </h3>
-                <table className="table table-hover">
+                <table className="table table-hover" style={tableStyle}>
 
-                    <thead className="thead-dark">
+                    <thead>
                         <tr>
                             <th scope="col">Amount</th>
                             <th scope="col">Time Submitted</th>
                             <th scope="col">Description</th>
                             <th scope="col">Submitted By</th>
                             <th scope="col">Type</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>

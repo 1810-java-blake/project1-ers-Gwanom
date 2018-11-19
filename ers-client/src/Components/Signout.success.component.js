@@ -9,6 +9,11 @@ export class LoggedOut extends React.Component{
             },
             method: 'POST'
         })
+        .then(() => {
+            window.setTimeout(() => {
+                this.props.history.push("/login");
+            }, 3000);
+        })
         .catch(err => console.log(err))
     }
     

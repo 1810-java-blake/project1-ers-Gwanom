@@ -30,13 +30,14 @@ public class ReimbursemenDaoJdbc implements ReimbursementDao {
 		log.trace("AppUserDaoJdbc.extractRFromResultSet()");
 		return new Reimbursement(rs.getInt("reimb_id"), rs.getDouble("reimb_amt"), rs.getTimestamp("reimb_submitted"),
 				rs.getTimestamp("reimb_resolved"), rs.getString("reimb_description"), rs.getInt("reimb_author"),
-				rs.getInt("reimb_resolver"), rs.getInt("reimb_status_id"), rs.getInt("reimb_type_id"));
+				rs.getString("user_first_name"), rs.getString("user_last_name"), rs.getInt("reimb_resolver"), 
+				rs.getInt("reimb_status_id"), rs.getInt("reimb_type_id"));
 	}
 	
 	@Override
-	public Reimbursement findById(int id) {
+	public Reimbursement findById(int id) {		
 		log.trace("ReimbursementDaoJdbc.findById()");
-		try (Connection conn = ConnectionUtil.getConnection()) {
+		try (Connection conn = ConnectionUtil.getConnection()) { 
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM ers_reimbursement WHERE reimb_id = ?");
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
@@ -53,7 +54,14 @@ public class ReimbursemenDaoJdbc implements ReimbursementDao {
 	public List<Reimbursement> findByStatusId(int id) {
 		log.trace("ReimbursementDaoJdbc.findByStatusId()");
 		try (Connection conn = ConnectionUtil.getConnection()) {
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM ers_reimbursement WHERE reimb_status_id = ?");
+			String SQL = 
+					"select reimb_id, reimb_amt, reimb_submitted, reimb_resolved, reimb_description, reimb_author, user_first_name, user_last_name, reimb_resolver, reimb_status_id, reimb_type_id " + 
+					"from ers_reimbursement as reim " + 
+					"inner join ers_users as aut " + 
+					"on reim.reimb_author = aut.ers_users_id " + 
+					"where reimb_status_id = ?";
+			
+			PreparedStatement ps = conn.prepareStatement(SQL);
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			List<Reimbursement> reimbs = new ArrayList<>();
@@ -89,17 +97,17 @@ public class ReimbursemenDaoJdbc implements ReimbursementDao {
 		log.trace("ReimbursementDaoJdbc.updateReimbursement()");
 		try (Connection conn = ConnectionUtil.getConnection()) {
 			PreparedStatement ps = conn.prepareStatement(
-					"UPDATE reimbursement SET reimb_resolved=?, reimb_status_id=? WHERE reimb_id=?"
+					"UPDATE ers_reimbursement SET reimb_resolved=?, reimb_status_id=? WHERE reimb_id=?"
 			);
 			ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
 			ps.setInt(2, statusId);
 			ps.setInt(3, reimbId);
-			ResultSet rs = ps.executeQuery();
-			return 0;
+			ps.executeUpdate();
+			return 1;
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return 0;
 		}
-		return 0;
 	}
 
 }

@@ -82,7 +82,29 @@ public class ReimbursementController extends HttpServlet {
 		}
 	}
 
-	private void processPut(HttpServletRequest req, HttpServletResponse res) {
+	private void processPut(HttpServletRequest req, HttpServletResponse res) throws IOException {
+//		/reimb/1/2
+//		updates reimbursement 1 to have status code 2
+		String uri = req.getRequestURI();
+		String context = "ERS";
+		uri = uri.substring(context.length() + 2, uri.length());
+		String[] uriArray = uri.split("/");
+		
+		if(!(uriArray.length == 3)) {
+			res.setStatus(404);
+			return;
+		}
+		try {
+			int reimId = Integer.parseInt(uriArray[1]); // throws exception if NaN
+			int statusId = Integer.parseInt(uriArray[2]);
+			int x = rs.updateReimbursement(reimId, statusId);
+			res.getWriter().write("update: " + x);
+			res.setStatus((x == 1) ? 200 : 500);
+			return;
+		} catch (NumberFormatException e) {
+			res.setStatus(404);
+			return;
+		}
 
 	}
 
